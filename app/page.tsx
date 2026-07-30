@@ -33,7 +33,6 @@ import {
   Send,
   Share2,
   Shirt,
-  Sparkles,
   Star,
   Users,
   Volume2,
@@ -52,7 +51,7 @@ const INVITATION = {
   invitationLine: "Please join us for a joyful little adventure",
   eventStart: "2027-02-14T12:00:00+08:00",
   eventEnd: "2027-02-14T17:00:00+08:00",
-  parents: "Miguel & Isabella Santos",
+  parents: "The Mayores Family",
   message:
     "Our little explorer is turning one. With grateful hearts, we invite you to celebrate a beautiful day of faith, family, laughter, and adventure-inspired fun.",
   church: {
@@ -80,53 +79,51 @@ const RSVP_ENDPOINT = "";
 const PARTY_GALLERY = [
   {
     title: "Adventure party setup",
-    image: "/theme/party-setup.jpg",
+    description:
+      "A warm welcome area with balloons, explorer accents, and a themed backdrop.",
     badge: "Featured",
+    icon: "setup",
   },
   {
     title: "Cake and sweets corner",
-    image: "/theme/party-cake.jpg",
+    description:
+      "A dessert station with a birthday cake, sweet treats, and custom labels.",
     badge: "Sweet",
+    icon: "cake",
   },
   {
     title: "Balloon and backdrop styling",
-    image: "/theme/party-backdrop.jpg",
+    description:
+      "A photo-ready corner styled with soft colors, clouds, and party details.",
     badge: "Backdrop",
+    icon: "backdrop",
   },
   {
     title: "Souvenirs and giveaways",
-    image: "/theme/party-giveaways.jpg",
+    description:
+      "Thoughtful take-home tokens prepared for family, friends, and special guests.",
     badge: "Favors",
+    icon: "favors",
   },
   {
     title: "Memory table details",
-    image: "/theme/party-memory.jpg",
+    description:
+      "A simple display for keepsakes, framed photos, and meaningful celebration pieces.",
     badge: "Keepsakes",
+    icon: "memory",
   },
   {
     title: "Celebration moments",
-    image: "/theme/party-moments.jpg",
+    description:
+      "A joyful program filled with faith, smiles, photos, and shared family memories.",
     badge: "Joy",
+    icon: "moments",
   },
 ] as const;
 
 const GODPARENTS = {
-  ninangs: [
-    "Vanessa Mariano",
-    "Krystle Camille Cruz",
-    "Lynne Corpus",
-    "Anne Villanueva",
-    "Bianca Santos",
-    "Jessa Padilla",
-  ],
-  ninongs: [
-    "Kevin Carlos",
-    "Raymond Santos",
-    "Miguel Cruz",
-    "Andrew Mariano",
-    "Paolo Reyes",
-    "Jeffrey Bernardo",
-  ],
+  ninangs: ["Jelaica Mayores", "Juris Zulueta", "Elaine"],
+  ninongs: ["Sonny", "Nicoles", "Marky", "Isaac"],
 };
 
 const FAQS = [
@@ -387,23 +384,45 @@ function BalloonCluster({ className = "" }: { className?: string }) {
   );
 }
 
+function BadgeSymbol({ symbol }: { symbol: string }) {
+  return (
+    <span className="flex size-10 items-center justify-center rounded-full border-2 border-[#f4c552] bg-[#f8e3a0] text-lg font-black text-[#1d5a45] shadow-[inset_0_0_0_3px_#ca4b30]">
+      {symbol}
+    </span>
+  );
+}
+
 function ScoutBadgeRow() {
-  const badges = ["★", "✈", "⛰", "✦", "⚑", "☀", "⌂", "✤"];
+  const badges = ["⌂", "✿", "★", "✈", "▲", "✦", "⚑", "☀"];
+  const lane = [...badges, ...badges, ...badges, ...badges, ...badges];
 
   return (
     <div className="overflow-hidden border-y-4 border-[#194f3e] bg-[#163f32] py-2 shadow-inner">
       <motion.div
-        animate={{ x: [0, -320] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-        className="flex w-max gap-2 px-2"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{
+          duration: 24,
+          repeat: Infinity,
+          repeatType: "loop",
+          ease: "linear",
+        }}
+        className="flex w-max will-change-transform"
       >
-        {[...badges, ...badges, ...badges].map((badge, index) => (
-          <span
-            key={`${badge}-${index}`}
-            className="flex size-10 items-center justify-center rounded-full border-2 border-[#f4c552] bg-[#f8e3a0] text-lg font-black text-[#1d5a45] shadow-[inset_0_0_0_3px_#ca4b30]"
+        {[0, 1].map((copy) => (
+          <div
+            key={copy}
+            className="flex shrink-0 items-center gap-2 pr-2"
+            aria-hidden={copy === 1}
           >
-            {badge}
-          </span>
+            {lane.map((badge, index) => (
+              <span
+                key={`${copy}-${badge}-${index}`}
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-[#f4c552] bg-[#f8e3a0] text-lg font-black text-[#1d5a45] shadow-[inset_0_0_0_3px_#ca4b30]"
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
         ))}
       </motion.div>
     </div>
@@ -464,32 +483,48 @@ function CountdownUnit({ value, label }: { value: number; label: string }) {
 
 function GalleryCard({
   title,
-  image,
+  description,
   badge,
+  icon,
 }: {
   title: string;
-  image: string;
+  description: string;
   badge?: string;
+  icon: "setup" | "cake" | "backdrop" | "favors" | "memory" | "moments";
 }) {
+  const iconMap = {
+    setup: <Backpack className="size-6" />,
+    cake: <Gift className="size-6" />,
+    backdrop: <CalendarDays className="size-6" />,
+    favors: <Users className="size-6" />,
+    memory: <Compass className="size-6" />,
+    moments: <Clock3 className="size-6" />,
+  } as const;
+
   return (
     <motion.article
       whileHover={{ y: -6, rotate: 0.35 }}
       className="group overflow-hidden rounded-[1.8rem] border-2 border-[#d8bc86] bg-[#fffdf7] shadow-[8px_10px_0_#ad7440]"
     >
-      <div className="relative aspect-[4/4.2] overflow-hidden bg-[#d9eef8]">
-        <img
-          src={image}
-          alt={title}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-        />
-        {badge ? (
-          <span className="absolute right-4 top-4 rounded-full bg-[#d45f31] px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white">
-            {badge}
-          </span>
-        ) : null}
-      </div>
-      <div className="p-5">
-        <p className="font-serif text-2xl font-black text-[#264f3b]">{title}</p>
+      <div className="relative flex aspect-[4/4.2] flex-col justify-between overflow-hidden bg-[linear-gradient(180deg,#dff3fb_0%,#fff7dd_58%,#eef6e4_100%)] p-6">
+        <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#f6d56f]/40 blur-2xl" />
+        <div className="absolute bottom-0 left-0 h-24 w-24 rounded-full bg-[#b8e0c0]/35 blur-2xl" />
+        <div className="relative flex items-start justify-between gap-4">
+          <div className="flex size-16 items-center justify-center rounded-2xl bg-[#24523f] text-[#fff1bf] shadow-[4px_5px_0_#ad7440]">
+            {iconMap[icon]}
+          </div>
+          {badge ? (
+            <span className="rounded-full bg-[#d45f31] px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white">
+              {badge}
+            </span>
+          ) : null}
+        </div>
+        <div className="relative mt-8">
+          <p className="font-serif text-2xl font-black text-[#264f3b]">
+            {title}
+          </p>
+          <p className="mt-3 text-sm leading-7 text-[#6f6b5d]">{description}</p>
+        </div>
       </div>
     </motion.article>
   );
@@ -612,13 +647,15 @@ function Stamp({
 
 function PartySparkleLine() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3 text-[#c67b34]">
-      {Array.from({ length: 11 }, (_, index) => (
-        <Sparkles
+    <div className="flex flex-wrap items-center justify-center gap-2 text-[#c67b34]">
+      {Array.from({ length: 13 }, (_, index) => (
+        <span
           key={index}
           className={cn(
-            "size-4",
-            index % 2 === 0 ? "opacity-90" : "opacity-50",
+            "block rounded-full",
+            index % 3 === 0 && "size-2.5 bg-[#d65f31]",
+            index % 3 === 1 && "size-3 bg-[#f0be52]",
+            index % 3 === 2 && "size-2.5 bg-[#2b5c47]",
           )}
         />
       ))}
@@ -956,7 +993,7 @@ export default function Page() {
             className="order-2 text-center lg:order-1 lg:text-left"
           >
             <div className="inline-flex items-center gap-2 rounded-full border-2 border-[#de9d40] bg-[#fff4ca] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#9b5722] shadow-[3px_4px_0_#a26635]">
-              <Sparkles className="size-3.5" />
+              <Compass className="size-3.5" />
               {INVITATION.invitationLine}
             </div>
 
@@ -1078,23 +1115,34 @@ export default function Page() {
           <SectionTitle
             kicker="Theme direction"
             title="Adventure in the background, party in the spotlight"
-            description="This version is focused on the party itself. The adventure movie inspiration only appears through mood, colors, balloons, badges, clouds, postcards, and little explorer styling—not by literally featuring the movie characters."
+            description="This version is focused on the party itself. The adventure inspiration appears through warm colors, balloons, scout-style badges, clouds, and little explorer details while keeping the celebration as the main focus."
           />
 
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
             {[
-              "Sky and cloud atmosphere",
-              "Balloon and scout-style accents",
-              "Party setup, cake, and celebration details",
+              {
+                label: "Sky and cloud atmosphere",
+                icon: <Compass className="size-6" />,
+              },
+              {
+                label: "Balloon and scout-style accents",
+                icon: <CalendarDays className="size-6" />,
+              },
+              {
+                label: "Party setup, cake, and celebration details",
+                icon: <Gift className="size-6" />,
+              },
             ].map((item) => (
               <div
-                key={item}
+                key={item.label}
                 className="rounded-[1.6rem] border-2 border-[#dbc08a] bg-[#fffdf8] p-6 text-center shadow-[7px_9px_0_#ad7440]"
               >
                 <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-[#f4d16f] text-[#24523f] shadow-sm">
-                  <Sparkles className="size-6" />
+                  {item.icon}
                 </div>
-                <p className="mt-5 text-lg font-black text-[#2a4f3c]">{item}</p>
+                <p className="mt-5 text-lg font-black text-[#2a4f3c]">
+                  {item.label}
+                </p>
               </div>
             ))}
           </div>
@@ -1151,7 +1199,7 @@ export default function Page() {
           <SectionTitle
             kicker="Party highlights"
             title="What the celebration can look like"
-            description="This is now the featured visual section: the party setup, decor, treats, giveaways, and celebration moments—not movie character scenes."
+            description="This section highlights the important parts of the celebration—setup, decor, sweets, giveaways, and memorable moments."
           />
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
@@ -1159,8 +1207,9 @@ export default function Page() {
               <GalleryCard
                 key={item.title}
                 title={item.title}
-                image={item.image}
+                description={item.description}
                 badge={item.badge}
+                icon={item.icon}
               />
             ))}
           </div>
@@ -1191,7 +1240,7 @@ export default function Page() {
               title={INVITATION.reception.name}
               time={INVITATION.reception.time}
               address={INVITATION.reception.address}
-              icon={<Sparkles className="size-7" />}
+              icon={<Gift className="size-7" />}
               onMap={() =>
                 openMap(INVITATION.reception.name, INVITATION.reception.address)
               }
@@ -1611,6 +1660,16 @@ export default function Page() {
           </motion.div>
         ) : null}
       </AnimatePresence>
+      <style jsx global>{`
+        @keyframes badge-marquee {
+          from {
+            transform: translate3d(0, 0, 0);
+          }
+          to {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
+      `}</style>
     </main>
   );
 }
