@@ -313,11 +313,28 @@ function SectionReveal({
 
   return (
     <motion.div
-      initial={false}
-      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.05, margin: "0px 0px -5% 0px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      style={{ opacity: 1, transform: "translateY(0px)" }}
+      initial={
+        reduceMotion
+          ? false
+          : {
+              y: 34,
+              scale: 0.985,
+            }
+      }
+      whileInView={
+        reduceMotion
+          ? undefined
+          : {
+              y: 0,
+              scale: 1,
+            }
+      }
+      viewport={{ once: true, amount: 0.08, margin: "0px 0px -8% 0px" }}
+      transition={{
+        duration: 0.72,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className={className}
     >
       {children}
@@ -708,14 +725,14 @@ export default function Page() {
   const shortDate = useMemo(() => formatShortDate(INVITATION.eventStart), []);
 
   useEffect(() => {
-    const overflow = opened ? "" : "hidden";
+    const root = document.documentElement;
 
-    document.body.style.overflow = overflow;
-    document.documentElement.style.overflow = overflow;
+    document.body.style.overflow = opened ? "" : "hidden";
+    root.style.overflow = opened ? "" : "hidden";
 
     return () => {
       document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      root.style.overflow = "";
     };
   }, [opened]);
 
@@ -740,7 +757,6 @@ export default function Page() {
 
   async function openInvitation() {
     setOpened(true);
-
     window.requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     });
@@ -902,7 +918,7 @@ export default function Page() {
             key="opening-cover"
             exit={{ opacity: 0, scale: 1.05, filter: "blur(16px)" }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[90] flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#bde7f5] px-5 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+            className="fixed inset-0 z-[90] flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#bde7f5] px-5"
           >
             <div className="absolute inset-0 bg-[linear-gradient(180deg,#9edcf2_0%,#dff4fb_58%,#f7e9c6_100%)]" />
             <CloudShape className="left-[-30px] top-[9%] scale-125" />
@@ -960,9 +976,7 @@ export default function Page() {
 
       <div
         className="fixed right-4 z-50 flex flex-col gap-2 sm:right-7"
-        style={{
-          bottom: "max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem))",
-        }}
+        style={{ bottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
       >
         <motion.button
           type="button"
@@ -1004,7 +1018,7 @@ export default function Page() {
         </motion.button>
       </div>
 
-      <section className="relative z-10 min-h-[100svh] overflow-hidden bg-[linear-gradient(180deg,#a9e0f3_0%,#e8f7fb_63%,#f7f1df_100%)] px-5 pb-20 pt-[max(3.5rem,env(safe-area-inset-top))] sm:px-8 lg:px-12">
+      <section className="relative z-10 min-h-[100svh] overflow-hidden bg-[linear-gradient(180deg,#a9e0f3_0%,#e8f7fb_63%,#f7f1df_100%)] px-5 pb-20 pt-14 sm:px-8 lg:px-12">
         <CloudShape className="-left-14 top-20 scale-150 opacity-80" />
         <CloudShape className="right-[-25px] top-[34%] opacity-75" />
         <CloudShape className="bottom-8 left-[28%] scale-75 opacity-70" />
@@ -1022,11 +1036,11 @@ export default function Page() {
           label="Celebrate"
         />
 
-        <div className="relative mx-auto grid min-h-[calc(100svh-5rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1fr_0.92fr]">
+        <div className="relative mx-auto grid min-h-[88dvh] max-w-7xl items-center gap-12 lg:grid-cols-[1fr_0.92fr]">
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.75, delay: opened ? 0.15 : 0 }}
+            initial={reduceMotion ? false : { x: -44, scale: 0.985 }}
+            animate={opened ? { x: 0, scale: 1 } : { x: -44, scale: 0.985 }}
+            transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="order-2 text-center lg:order-1 lg:text-left"
           >
             <div className="inline-flex items-center gap-2 rounded-full border-2 border-[#de9d40] bg-[#fff4ca] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#9b5722] shadow-[3px_4px_0_#a26635]">
@@ -1077,9 +1091,9 @@ export default function Page() {
           </motion.div>
 
           <motion.div
-            initial={false}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.85, delay: opened ? 0.25 : 0 }}
+            initial={reduceMotion ? false : { x: 44, scale: 0.94 }}
+            animate={opened ? { x: 0, scale: 1 } : { x: 44, scale: 0.94 }}
+            transition={{ duration: 1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="order-1 mx-auto w-full max-w-[520px] lg:order-2"
           >
             <div className="relative aspect-[4/5]">
