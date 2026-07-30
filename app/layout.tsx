@@ -15,10 +15,18 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+const SITE_URL = "https://kobe-christening-invitation.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Kobe's Christening & 1st Birthday",
+  metadataBase: new URL(SITE_URL),
+
+  title: {
+    default: "Kobe's Christening & 1st Birthday",
+    template: "%s | Kobe's Celebration",
+  },
+
   description:
-    "Join us as we celebrate the Christening and 1st Birthday of Kobe Rustyn Mayores.",
+    "Join us as we celebrate the Christening and 1st Birthday of Kobe Rustyn Mayores on February 14, 2027.",
 
   applicationName: "Kobe's Online Invitation",
 
@@ -39,37 +47,30 @@ export const metadata: Metadata = {
   creator: "Creatiq Digital Solutions",
   publisher: "Creatiq Digital Solutions",
 
-  icons: {
-    icon: [
-      {
-        url: "/images/kobe.jpg",
-        type: "image/jpeg",
-      },
-    ],
-    shortcut: "/images/kobe.jpg",
-    apple: "/images/kobe.jpg",
+  alternates: {
+    canonical: SITE_URL,
   },
 
   openGraph: {
     title: "Kobe's Christening & 1st Birthday",
     description:
-      "Please join us for a joyful little adventure as we celebrate Kobe's Christening and 1st Birthday.",
-    type: "website",
-    locale: "en_PH",
+      "Join us for Kobe Rustyn Mayores' Christening and 1st Birthday on February 14, 2027.",
+    url: SITE_URL,
     siteName: "Kobe's Online Invitation",
-    images: [
-      {
-        url: "/images/kobe.jpg",
-        alt: "Kobe Rustyn Mayores",
-      },
-    ],
+    locale: "en_PH",
+    type: "website",
   },
 
   twitter: {
     card: "summary_large_image",
     title: "Kobe's Christening & 1st Birthday",
-    description: "Join us as we celebrate Kobe's Christening and 1st Birthday.",
-    images: ["/images/kobe.jpg"],
+    description:
+      "Join us for Kobe Rustyn Mayores' Christening and 1st Birthday on February 14, 2027.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
